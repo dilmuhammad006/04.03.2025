@@ -1,0 +1,24 @@
+Blog uchun DB
+
+Maqsad: Foydalanuvchi blog yarata olish uchun loyiha
+
+Asosiy modellar:
+    Users(Foydalanuvchilar):
+        name,
+        email
+    Bog:
+        UserID
+        Blog sarlavhasi
+        Blogning qisqacha tarifi
+        Blogning qaysi vaqtda chop etilganligi
+        Blog
+
+Talablar:
+    Funksional talablar:
+        Foydalanuvchi name va email orqali ro'yxatdan o'ta olishi kerak.
+        Foydalanuvchi name va emal malumotlarini yangilay olishi kerak.
+        Foydalanuvchi Blog haqidagi malumotlarini yangilay olishi kerak.
+        Foydalanuvchi Blogni istalgan vaqtda ochira olishi kerak.
+        Foydalanuvchi Blog qachon yaratilganligi haqida malumot ola olishi kerak.
+    
+    
