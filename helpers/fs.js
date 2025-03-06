@@ -1,20 +1,15 @@
-const fs = require("node:fs");
+const fs = require("fs");
 
 const readFile = (filePath) => {
-  try {
-    const data = fs.readFileSync(filePath, "utf-8");
-    return data.length ? JSON.parse(data) : [];
-  } catch (error) {
-    console.log(error.message);
-  }
+    try {
+        return JSON.parse(fs.readFileSync(filePath, "utf8"));
+    } catch (error) {
+        return [];
+    }
 };
 
-const wrtieFile = (filePath, data) => {
-  try {
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 4), "utf-8");
-  } catch (error) {
-    console.log(error.message);
-  }
+const writeFile = (filePath, data) => {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 };
 
-module.exports = { readFile, wrtieFile };
+module.exports = { readFile, writeFile };

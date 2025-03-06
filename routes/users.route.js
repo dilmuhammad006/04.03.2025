@@ -1,42 +1,69 @@
 const { Router } = require("express");
-const { readFile, wrtieFile } = require("../helpers/fs");
+const { readFile, writeFile } = require("../helpers/fs");
 const path = require("node:path");
+
 const userRouter = Router();
 
-userRouter.get("/", (req, res) => {
-  try {
-    const filePath = path.join(__dirname, "..", "data", "blog.json");
-    const users = readFile(filePath);
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ error: "Xatolik yuz berdi!" });
-  }
+userRouter.get("/api/login", (req, res) => {
+  res.render("login");
 });
 
-userRouter.post("/", (req, res) => {
-  const { name, email } = req.body;
-  const filePath = path.join(__dirname,"..", "data", "blog.json");
+userRouter.post("/api/login", (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).send({ message: "Email va parolni to'ldiring!" });
+  }
+
+  const filePath = path.join(__dirname, "..", "data", "users.json");
   const users = readFile(filePath);
-  const foundedUser = users.find((u) => u.name === name && u.email === email);
+
+  const user = users.find((u) => u.email === email && u.password === password);
+
+  if (!user) {
+    return res.status(401).send({ message: "Email yoki parol noto'g'ri!" });
+  }
+
+  res.redirect(`/api/blogs`); 
+});
+
+
+userRouter.get("/api/registration", (req, res) => {
+  res.render("registration");
+});
+
+userRouter.post("/api/registration", (req, res) => {
+  const { name, email, password } = req.body;
+  
+
+  if (!name || !email || !password) {
+    return res.status(400).send({ message: "Barcha maydonlarni to‘ldiring!" });
+  }
+
+  const filePath = path.join(__dirname, "..", "data", "users.json");
+  const users = readFile(filePath);
+
+  const foundedUser = users.find((u) => u.email === email);
 
   if (foundedUser) {
-    res.status(409).send({
-      message: "This name or email already taken!",
-    });
-    return;
+    return res
+      .status(409)
+      .send({ message: "Bu email allaqachon ro‘yxatdan o‘tgan!" });
   }
+
   const newUser = {
     id: users.at(-1)?.id + 1 || 1,
     name,
     email,
+    password,
   };
+
   users.push(newUser);
-  wrtieFile(filePath, users);
-  res.status(201).send({
-    message: "User created!",
-    data: newUser,
-  });
+  writeFile(filePath, users);
+
+  res.redirect(`/api/blogs`); 
 });
 
-// export
+
+// Export
 module.exports = userRouter;
